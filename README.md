@@ -18,7 +18,9 @@ You can specify the field as a **'shrine'** type if not detected:
 
 ## Deleting attachment
 
-You need to define a **delete method** if you want to delete attachment:
+You need to define a **delete method** if you want to delete attachment.
+
+(Or you can simply use the [remove_attachment](https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remove_attachment.rb) plugin for this)
 
 ```ruby
 class Article < ActiveRecord::Base
