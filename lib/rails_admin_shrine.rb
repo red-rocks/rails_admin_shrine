@@ -13,9 +13,15 @@ module RailsAdmin
           register_instance_option :thumb_method do
             unless defined? @thumb_method
               @thumb_method = begin
-                attacher = bindings[:object].public_send("#{name}_attacher".to_sym)
-                versions = attacher.shrine_class.version_names.map { |v| v.to_sym }
-                versions.detect { |v| v.in?(%i[thumb thumbnail]) } || versions.first
+                next nil unless value.is_a?(Hash)
+
+                if value.key?(:thumb)
+                  :thumb
+                elsif value.key?(:thumbnail)
+                  :thumbnail
+                else
+                  value.keys.first
+                end
               end
             end
             @thumb_method
