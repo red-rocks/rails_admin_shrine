@@ -10,21 +10,32 @@ module RailsAdmin
         class Shrine < RailsAdmin::Config::Fields::Types::FileUpload
           RailsAdmin::Config::Fields::Types::register(self)
 
-          register_instance_option :thumb_method do
-            unless defined? @thumb_method
-              @thumb_method = begin
-                next nil unless value.is_a?(Hash)
+          register_instance_option :partial do
+            'form_shrine'
+          end
 
-                if value.key?(:thumb)
-                  :thumb
-                elsif value.key?(:thumbnail)
-                  :thumbnail
-                else
-                  value.keys.first
+          register_instance_option :svg? do
+            (url = resource_url.to_s) && url.split('.').last =~ /svg/i
+          end
+          register_instance_option :thumb_method do
+            if svg?
+              :original
+            else
+              unless defined? @thumb_method
+                @thumb_method = begin
+                  next nil unless value.is_a?(Hash)
+
+                  if value.key?(:thumb)
+                    :thumb
+                  elsif value.key?(:thumbnail)
+                    :thumbnail
+                  else
+                    value.keys.first
+                  end
                 end
               end
+              @thumb_method
             end
-            @thumb_method
           end
 
           register_instance_option :delete_method do
@@ -34,6 +45,20 @@ module RailsAdmin
           register_instance_option :cache_method do
             "cached_#{name}_data"
           end
+
+
+
+          register_instance_option(:jcrop_options) do
+            {}
+          end
+
+          register_instance_option(:fit_image) do
+            @fit_image ||= false
+          end
+
+
+
+
 
           def resource_url(thumb = false)
             return nil unless value
